@@ -1,0 +1,29 @@
+{
+  "name": "gestion-de-ahorro",
+  "version": "1.0.0",
+  "description": "App local de escritorio para gestión de gastos, ingresos, ahorro y reportes.",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron src/main.js",
+    "start:server": "node src/server.js",
+    "test": "node --test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://localhost:26831/JuanCRios03/Gestion-de-ahorro"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "better-sqlite3": "^13.0.3",
+    "express": "^5.3.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "electron": "^44.8.0",
+    "supertest": "^7.3.1"
+  }
+}
