@@ -1,0 +1,66 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /* Marca: azul marino / petróleo, para acentos y datos positivos */
+  --color-brand-50: #f2f7fb;
+  --color-brand-100: #dde9f4;
+  --color-brand-200: #b8d2e8;
+  --color-brand-300: #7dabd4;
+  --color-brand-400: #4a84bc;
+  --color-brand-500: #2568a6;
+  --color-brand-600: #1c5488;
+  --color-brand-700: #17436b;
+  --color-brand-800: #123354;
+  --color-brand-900: #0d2340;
+  --color-brand-950: #071626;
+
+  /* Superficies y tinta, claro / oscuro */
+  --color-surface: #fcfcfb;
+  --color-surface-dark: #1a1a19;
+  --color-page: #f9f9f7;
+  --color-page-dark: #0d0d0d;
+  --color-ink: #0b0b0b;
+  --color-ink-dark: #ffffff;
+  --color-ink-secondary: #52514e;
+  --color-ink-secondary-dark: #c3c2b7;
+  --color-ink-muted: #898781;
+  --color-border: #e1e0d9;
+  --color-border-dark: #2c2c2a;
+
+  /* Alerta: reservado solo para gastos por encima del promedio / presupuesto */
+  --color-alert: #d03b3b;
+  --color-alert-dark: #e66767;
+  --color-alert-soft: #fdecec;
+  --color-alert-soft-dark: #3a1f1f;
+
+  --color-good: #0ca30c;
+  --color-good-dark: #0ca30c;
+
+  /* Advertencia: presupuesto acercándose al límite (80-100%) */
+  --color-warning: #b3760a;
+  --color-warning-dark: #fab219;
+  --color-warning-soft: #fdf3e2;
+  --color-warning-soft-dark: #3a2c0f;
+}
+
+html {
+  color-scheme: light dark;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--color-brand-200);
+}
+
+@media (prefers-color-scheme: dark) {
+  ::selection {
+    background: var(--color-brand-700);
+  }
+}

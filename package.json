@@ -1,0 +1,17 @@
+{
+  "name": "mis-finanzas-desktop",
+  "version": "1.0.0",
+  "private": true,
+  "description": "App de escritorio de control de gastos personal (Electron + Express + SQLite)",
+  "main": "electron/main.js",
+  "scripts": {
+    "setup": "npm install --prefix backend && npm install --prefix frontend && npm install",
+    "build:frontend": "npm run build --prefix frontend",
+    "seed": "npm run seed --prefix backend",
+    "desktop": "npm run build:frontend && electron .",
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "^33.2.1"
+  }
+}

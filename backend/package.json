@@ -1,0 +1,20 @@
+{
+  "name": "control-gastos-backend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "API para la app personal de control de gastos",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "seed": "node src/db/seed.js"
+  },
+  "engines": {
+    "node": ">=22.5.0"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2"
+  }
+}
