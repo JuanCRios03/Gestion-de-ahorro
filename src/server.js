@@ -35,10 +35,42 @@ function parseBbvaNotification(text) {
     throw new Error('Monto inválido en la notificación BBVA');
   }
 
-  const descriptionMatch = normalized.match(/(?:en|a)\s+([^.,]+)(?:[.,]|$)/i);
-  const description = descriptionMatch ? descriptionMatch[1].trim() : 'Compra detectada BBVA';
+  const lowered = normalized.toLowerCase();
+  const marker = lowered.includes(' en ') ? ' en ' : lowered.includes(' a ') ? ' a ' : null;
+  let description = 'Compra detectada BBVA';
+  if (marker) {
+    const start = lowered.indexOf(marker) + marker.length;
+    let end = normalized.indexOf('.', start);
+    if (end === -1) end = normalized.indexOf(',', start);
+    if (end === -1) end = normalized.length;
+    const parsedDescription = normalized.slice(start, end).trim();
+    if (parsedDescription) {
+      description = parsedDescription;
+    }
+  }
 
   return { amount, description };
+}
+
+function createRateLimiter({ windowMs = 60000, maxRequests = 120 } = {}) {
+  const bucket = new Map();
+  return function rateLimiter(req, res, next) {
+    const key = req.ip || req.socket?.remoteAddress || 'local';
+    const now = Date.now();
+    const existing = bucket.get(key);
+
+    if (!existing || now - existing.windowStart > windowMs) {
+      bucket.set(key, { count: 1, windowStart: now });
+      return next();
+    }
+
+    if (existing.count >= maxRequests) {
+      return res.status(429).json({ error: 'Demasiadas solicitudes, intenta de nuevo en unos segundos.' });
+    }
+
+    existing.count += 1;
+    return next();
+  };
 }
 
 function calculateBudgetByIncome(totalIncome) {
@@ -63,6 +95,7 @@ function createApp(db) {
   const reactDomUmdPath = path.join(path.dirname(require.resolve('react-dom/package.json')), 'umd');
 
   app.use(express.json());
+  app.use('/api', createRateLimiter());
   app.use('/vendor/react', express.static(reactUmdPath));
   app.use('/vendor/react-dom', express.static(reactDomUmdPath));
   app.use(express.static(path.join(__dirname, '..', 'public')));
