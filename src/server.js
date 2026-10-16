@@ -1,5 +1,6 @@
 const path = require('path');
 const express = require('express');
+const { rateLimit } = require('express-rate-limit');
 const { initializeDatabase } = require('./db');
 
 const PERIOD_MAP = {
@@ -52,27 +53,6 @@ function parseBbvaNotification(text) {
   return { amount, description };
 }
 
-function createRateLimiter({ windowMs = 60000, maxRequests = 120 } = {}) {
-  const bucket = new Map();
-  return function rateLimiter(req, res, next) {
-    const key = req.ip || req.socket?.remoteAddress || 'local';
-    const now = Date.now();
-    const existing = bucket.get(key);
-
-    if (!existing || now - existing.windowStart > windowMs) {
-      bucket.set(key, { count: 1, windowStart: now });
-      return next();
-    }
-
-    if (existing.count >= maxRequests) {
-      return res.status(429).json({ error: 'Demasiadas solicitudes, intenta de nuevo en unos segundos.' });
-    }
-
-    existing.count += 1;
-    return next();
-  };
-}
-
 function calculateBudgetByIncome(totalIncome) {
   const income = Number(totalIncome) || 0;
   return {
@@ -95,7 +75,16 @@ function createApp(db) {
   const reactDomUmdPath = path.join(path.dirname(require.resolve('react-dom/package.json')), 'umd');
 
   app.use(express.json());
-  app.use('/api', createRateLimiter());
+  app.use(
+    '/api',
+    rateLimit({
+      windowMs: 60 * 1000,
+      max: 120,
+      standardHeaders: true,
+      legacyHeaders: false,
+      message: { error: 'Demasiadas solicitudes, intenta de nuevo en unos segundos.' },
+    })
+  );
   app.use('/vendor/react', express.static(reactUmdPath));
   app.use('/vendor/react-dom', express.static(reactDomUmdPath));
   app.use(express.static(path.join(__dirname, '..', 'public')));
